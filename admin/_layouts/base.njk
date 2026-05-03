@@ -1,0 +1,114 @@
+{% set settings = settings.global %}
+{% set categories = categories.categories or [] %}
+<!DOCTYPE html>
+<html lang="ur" dir="rtl"{% if settings.enable_dark_mode %} data-bs-theme="light"{% endif %}>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% if meta_title %}{{ meta_title }}{% elif title %}{{ title }} | {{ settings.site_title }}{% else %}{{ settings.site_title }}{% endif %}</title>
+  <meta name="description" content="{% if meta_description %}{{ meta_description }}{% else %}{{ settings.site_description }}{% endif %}">
+  {% if canonical %}<link rel="canonical" href="{{ canonical }}">{% endif %}
+  {% if og_image %}<meta property="og:image" content="{{ og_image }}">{% elif featured_image %}<meta property="og:image" content="{{ featured_image }}">{% else %}<meta property="og:image" content="/assets/default-og.jpg">{% endif %}
+  <!-- Preconnect for speed (Litespeed Cache style) -->
+  {% if settings.preconnect_urls %}
+    {% for url in settings.preconnect_urls.split(',') %}
+      <link rel="preconnect" href="{{ url | trim }}">
+    {% endfor %}
+  {% endif %}
+  <!-- Bootstrap 5.3 RTL CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css">
+  <!-- Global CSS -->
+  {% if settings.extra_css %}<style>{{ settings.extra_css | cssmin | safe }}</style>{% endif %}
+  <!-- Page-level CSS -->
+  {% if custom_css %}<style>{{ custom_css | cssmin | safe }}</style>{% endif %}
+  <!-- Head HTML injection -->
+  {% if head_html %}{{ head_html | safe }}{% endif %}
+  <!-- Global Header Code -->
+  {% if settings.header_code %}{{ settings.header_code | safe }}{% endif %}
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg bg-body-tertiary">
+    <div class="container">
+      <a class="navbar-brand" href="/">{{ settings.site_title }}</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navMenu">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link" href="/">ہوم</a></li>
+          <li class="nav-item"><a class="nav-link" href="/archive/">آرکائیو</a></li>
+          <li class="nav-item"><a class="nav-link" href="/search/">🔍 تلاش</a></li>
+          {% for cat in categories %}
+            {% if cat.slug %}
+            <li class="nav-item"><a class="nav-link" href="/category/{{ cat.slug }}/">{{ cat.name }}</a></li>
+            {% endif %}
+          {% endfor %}
+          {% if settings.enable_dark_mode %}
+          <li class="nav-item">
+            <button id="darkModeToggle" class="btn btn-sm btn-outline-secondary ms-2">🌓</button>
+          </li>
+          {% endif %}
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container my-4">
+    {{ content | safe }}
+  </main>
+
+  <footer class="container mt-5 mb-3 text-muted">
+    <hr>
+    <p>© {{ "now" | date: "yyyy" }} {{ settings.site_title }} — <a href="/feed.xml">RSS</a> | <a href="/sitemap.xml">Sitemap</a></p>
+  </footer>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Global JS -->
+  {% if settings.extra_js %}<script>{{ settings.extra_js | jsmin | safe }}</script>{% endif %}
+  <!-- Page-level JS -->
+  {% if custom_js %}<script>{{ custom_js | jsmin | safe }}</script>{% endif %}
+  <!-- Global Footer Code -->
+  {% if settings.footer_code %}{{ settings.footer_code | safe }}{% endif %}
+  <!-- Dark Mode Toggle -->
+  {% if settings.enable_dark_mode %}
+  <script>
+    (function() {
+      const toggleBtn = document.getElementById('darkModeToggle');
+      if (!toggleBtn) return;
+      const html = document.documentElement;
+      const saved = localStorage.getItem('darkMode');
+      if (saved === 'dark') html.setAttribute('data-bs-theme', 'dark');
+      toggleBtn.addEventListener('click', () => {
+        if (html.getAttribute('data-bs-theme') === 'dark') {
+          html.setAttribute('data-bs-theme', 'light');
+          localStorage.setItem('darkMode', 'light');
+        } else {
+          html.setAttribute('data-bs-theme', 'dark');
+          localStorage.setItem('darkMode', 'dark');
+        }
+      });
+    })();
+  </script>
+  {% endif %}
+  <!-- Disqus Comments if enabled -->
+  {% if settings.disqus_shortname and show_comments %}
+  <div class="container mt-4">
+    <div id="disqus_thread"></div>
+    <script>
+      var disqus_config = function () {
+        this.page.url = '{{ page.url | absoluteUrl }}';
+        this.page.identifier = '{{ page.fileSlug }}';
+      };
+      (function() {
+        var d = document, s = d.createElement('script');
+        s.src = 'https://{{ settings.disqus_shortname }}.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+      })();
+    </script>
+  </div>
+  {% endif %}
+</body>
+</html>
