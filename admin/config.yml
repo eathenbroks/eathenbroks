@@ -1,0 +1,138 @@
+backend:
+  name: git-gateway
+  branch: main
+  repo: your-username/your-repo-name   # ← اپنا GitHub یوزرنیم اور ریپو کا نام ڈالیں
+
+media_folder: "assets/uploads"
+public_folder: "/assets/uploads"
+
+collections:
+  # ------------------ SETTINGS ------------------
+  - name: "settings"
+    label: "⚙️ Site Settings"
+    delete: false
+    editor:
+      preview: false
+    files:
+      - file: "data/settings.json"
+        label: "Global"
+        name: "global"
+        fields:
+          - { label: "Site Title", name: "site_title", widget: "string" }
+          - { label: "Site Description (SEO)", name: "site_description", widget: "text" }
+          - { label: "Disqus Shortname (comments)", name: "disqus_shortname", widget: "string", required: false }
+          - { label: "Enable Dark Mode Toggle", name: "enable_dark_mode", widget: "boolean", default: true }
+          - { label: "Preconnect URLs (comma separated)", name: "preconnect_urls", widget: "string", required: false }
+          - label: "Global Header Code (analytics, ads, etc.)"
+            name: "header_code"
+            widget: "code"
+            default_language: "html"
+            required: false
+          - label: "Global Footer Code"
+            name: "footer_code"
+            widget: "code"
+            default_language: "html"
+            required: false
+          - label: "Global CSS"
+            name: "extra_css"
+            widget: "code"
+            default_language: "css"
+            required: false
+          - label: "Global JavaScript"
+            name: "extra_js"
+            widget: "code"
+            default_language: "javascript"
+            required: false
+
+  # ------------------ CATEGORIES (کسٹم) ------------------
+  - name: "categories"
+    label: "📂 Categories"
+    folder: "data/categories"   # will create an array file, but we'll handle manually; use single file data/categories.json
+    create: false   # we'll use a single file approach via files
+    editor:
+      preview: false
+    files:
+      - file: "data/categories.json"
+        label: "All Categories"
+        name: "categories_list"
+        fields:
+          - label: "Categories"
+            name: "categories"
+            widget: "list"
+            fields:
+              - { label: "Category Name", name: "name", widget: "string" }
+              - { label: "Slug", name: "slug", widget: "string" }
+              - { label: "Description", name: "description", widget: "text", required: false }
+              - { label: "SEO Title", name: "seo_title", widget: "string", required: false }
+              - { label: "SEO Description", name: "seo_description", widget: "text", required: false }
+              - { label: "Image", name: "image", widget: "image", required: false }
+
+  # ------------------ PAGES ------------------
+  - name: "pages"
+    label: "📄 Pages"
+    folder: "pages"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Permalink", name: "permalink", widget: "string", required: false }
+      - { label: "SEO Description", name: "meta_description", widget: "text", required: false }
+      - { label: "Canonical URL", name: "canonical", widget: "string", required: false }
+      - { label: "OG Image", name: "og_image", widget: "image", required: false }
+      - { label: "Body", name: "body", widget: "markdown" }
+      - label: "Album"
+        name: "album"
+        widget: "select"
+        options: ["general", "blog", "products", "custom"]
+        default: "general"
+      - label: "Custom CSS"
+        name: "custom_css"
+        widget: "code"
+        default_language: "css"
+        required: false
+      - label: "Custom JS"
+        name: "custom_js"
+        widget: "code"
+        default_language: "javascript"
+        required: false
+      - label: "Head HTML"
+        name: "head_html"
+        widget: "code"
+        default_language: "html"
+        required: false
+
+  # ------------------ BLOG POSTS ------------------
+  - name: "posts"
+    label: "📝 Blog Posts"
+    folder: "posts"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Date", name: "date", widget: "datetime" }
+      - { label: "Categories (tags)", name: "tags", widget: "list", required: false }
+      - { label: "Featured Image", name: "featured_image", widget: "image", required: false }
+      - { label: "Body", name: "body", widget: "markdown" }
+      - label: "Album for Photos"
+        name: "album"
+        widget: "select"
+        options: ["general", "blog", "products", "custom"]
+        default: "blog"
+      - { label: "SEO Description", name: "meta_description", widget: "text", required: false }
+      - { label: "Canonical URL", name: "canonical", widget: "string", required: false }
+      - { label: "OG Image", name: "og_image", widget: "image", required: false }
+      - label: "Custom CSS"
+        name: "custom_css"
+        widget: "code"
+        default_language: "css"
+        required: false
+      - label: "Custom JS"
+        name: "custom_js"
+        widget: "code"
+        default_language: "javascript"
+        required: false
+      - label: "Head HTML"
+        name: "head_html"
+        widget: "code"
+        default_language: "html"
+        required: false
