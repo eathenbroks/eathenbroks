@@ -1,0 +1,13 @@
+{
+  "global": {
+    "site_title": "میرا بلاگ",
+    "site_description": "ایک مکمل اردو بلاگ",
+    "disqus_shortname": "",
+    "enable_dark_mode": true,
+    "header_code": "",
+    "footer_code": "",
+    "extra_css": "",
+    "extra_js": "",
+    "preconnect_urls": "https://c.disquscdn.com,https://disqus.com"
+  }
+}
